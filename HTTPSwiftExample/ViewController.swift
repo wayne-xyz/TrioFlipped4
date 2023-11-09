@@ -16,7 +16,9 @@
 // to see what your public facing IP address is, the ip address can be used here
 
 // CHANGE THIS TO THE URL FOR YOUR LAPTOP
+//MARK: Part Two
 let SERVER_URL = "http://192.168.50.247:8000" // change this for your server name!!!
+
 // change my server ip
 
 import UIKit
@@ -260,6 +262,16 @@ class ViewController: UIViewController, URLSessionDelegate {
         dsid = 1 // set this and it will update UI
     }
 
+    
+    //MARK: Part TWO
+    // change the DSID by stepper
+    @IBAction func selectDSIDAction(_ sender: UIStepper) {
+        let value = Int(sender.value)
+        print("Step value\(value)")
+        dsid=value
+    }
+    
+    
     //MARK: Get New Dataset ID
     @IBAction func getDataSetId(_ sender: AnyObject) {
         // create a GET request for a new DSID from server
