@@ -16,7 +16,10 @@
 // to see what your public facing IP address is, the ip address can be used here
 
 // CHANGE THIS TO THE URL FOR YOUR LAPTOP
-let SERVER_URL = "http://10.9.130.20:8000" // change this for your server name!!!
+//MARK: Part Two
+let SERVER_URL = "http://192.168.50.247:8000" // change this for your server name!!!
+
+// change my server ip
 
 import UIKit
 import CoreMotion
@@ -259,6 +262,16 @@ class ViewController: UIViewController, URLSessionDelegate {
         dsid = 1 // set this and it will update UI
     }
 
+    
+    //MARK: Part TWO
+    // change the DSID by stepper
+    @IBAction func selectDSIDAction(_ sender: UIStepper) {
+        let value = Int(sender.value)
+        print("Step value\(value)")
+        dsid=value
+    }
+    
+    
     //MARK: Get New Dataset ID
     @IBAction func getDataSetId(_ sender: AnyObject) {
         // create a GET request for a new DSID from server
@@ -357,10 +370,18 @@ class ViewController: UIViewController, URLSessionDelegate {
                         }
                         else{ // no error we are aware of
                             let jsonDictionary = self.convertDataToDictionary(with: data)
-                            
-                            let labelResponse = jsonDictionary["prediction"]!
-                            print(labelResponse)
-                            self.displayLabelResponse(labelResponse as! String)
+                            // MARK: Part Three to deal with the prediction
+                            // I send the error message from the server to deal with the situation that i have no module ready
+                            if let labelResponse = jsonDictionary["prediction"] {
+                                print(labelResponse)
+                                self.displayLabelResponse(labelResponse as! String)
+                            }else if let errorInfor = jsonDictionary["error"]{
+                                print(errorInfor)
+                                self.showAlert(title: "Infor", message: errorInfor as! String)
+                            }else{
+                                print("Something Error We are dealing with")
+                            }
+                
 
                         }
                                                                     
@@ -368,6 +389,18 @@ class ViewController: UIViewController, URLSessionDelegate {
         
         postTask.resume() // start the task
     }
+    
+    func showAlert(title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        
+        // Present the alert on the main thread
+        DispatchQueue.main.async {
+            self.present(alertController, animated: true, completion: nil)
+        }
+    }
+    
+    
     
     func displayLabelResponse(_ response:String){
         switch response {
