@@ -370,10 +370,18 @@ class ViewController: UIViewController, URLSessionDelegate {
                         }
                         else{ // no error we are aware of
                             let jsonDictionary = self.convertDataToDictionary(with: data)
-                            
-                            let labelResponse = jsonDictionary["prediction"]!
-                            print(labelResponse)
-                            self.displayLabelResponse(labelResponse as! String)
+                            // MARK: Part Three to deal with the prediction
+                            // I send the error message from the server to deal with the situation that i have no module ready
+                            if let labelResponse = jsonDictionary["prediction"] {
+                                print(labelResponse)
+                                self.displayLabelResponse(labelResponse as! String)
+                            }else if let errorInfor = jsonDictionary["error"]{
+                                print(errorInfor)
+                                self.showAlert(title: "Infor", message: errorInfor as! String)
+                            }else{
+                                print("Something Error We are dealing with")
+                            }
+                
 
                         }
                                                                     
@@ -381,6 +389,18 @@ class ViewController: UIViewController, URLSessionDelegate {
         
         postTask.resume() // start the task
     }
+    
+    func showAlert(title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        
+        // Present the alert on the main thread
+        DispatchQueue.main.async {
+            self.present(alertController, animated: true, completion: nil)
+        }
+    }
+    
+    
     
     func displayLabelResponse(_ response:String){
         switch response {
